@@ -5,8 +5,8 @@ import "./App.css";
 
 export default function Avatarpage() {
   const navigate = useNavigate();
-  const [selectedAvatar, setSelectedAvatar] = useState("Select Avatar");
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // Modal state
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const avatars = [
     { id: 1, icon: "🌿", label: "Calm" },
@@ -19,8 +19,16 @@ export default function Avatarpage() {
   const closePopup = () => setIsPopupOpen(false);
 
   const selectAvatarOnPopup = (avatar) => {
-    setSelectedAvatar(`${avatar.icon} ${avatar.label}`);
-    closePopup(); // Close the popup automatically after selection
+    setSelectedAvatar(avatar.icon); // Just store the icon
+    closePopup();
+  };
+
+  const handleNext = () => {
+    if (selectedAvatar) {
+      navigate('/chat', { state: { selectedAvatar } }); // Pass the avatar icon to /chat
+    } else {
+      alert("Please select an avatar first!");
+    }
   };
 
   return (
@@ -30,13 +38,11 @@ export default function Avatarpage() {
       </div>
 
       <div className="selectavatardiv">
-        {/* Button to open popup */}
         <button type="button" className="guestbtn" onClick={openPopup}>
-          {selectedAvatar}
+          {selectedAvatar ? `${selectedAvatar}` : "Select Avatar"}
         </button>
       </div>
 
-      {/* Custom Modal (Instead of <dialog>) */}
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup-content">
@@ -61,7 +67,7 @@ export default function Avatarpage() {
         <div onClick={() => navigate("/")} className="icon1">
           <FaRegArrowAltCircleLeft />
         </div>
-        <div className="icon2" onClick={() => navigate('/chat')}>
+        <div className="icon2" onClick={handleNext}>
           <FaRegArrowAltCircleRight />
         </div>
       </div>
